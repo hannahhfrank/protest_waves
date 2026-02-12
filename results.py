@@ -644,7 +644,7 @@ ax1.plot(results['ARIMA_change'].iloc[-3], 0, marker='x', color='black',markersi
 
 selected_points = [(results['ARIMA_change'].iloc[-4], "175473")]
 for value, label in selected_points:
-    ax1.text(value, 2.9, label, fontsize=12, color='black', ha='center')
+    ax1.text(value, 3, label, fontsize=12, color='black', ha='center')
 ax1.plot(results['ARIMA_change'].iloc[-4], 0, marker='x', color='black',markersize=10)
 
 
@@ -669,6 +669,11 @@ selected_points = [(results['RF_change'].iloc[-4], "166856")]
 for value, label in selected_points:
     ax2.text(value, 1.4, label, fontsize=12, color='black', ha='center')
 ax2.plot(results['RF_change'].iloc[-4], -0.1, marker='x', color='black',markersize=10)
+
+selected_points = [(results['RF_change'].iloc[-5], "171877")]
+for value, label in selected_points:
+    ax2.text(value, 1.8, label, fontsize=12, color='black', ha='center')
+ax2.plot(results['RF_change'].iloc[-5], -0.1, marker='x', color='black',markersize=10)
 
 # ----
 
