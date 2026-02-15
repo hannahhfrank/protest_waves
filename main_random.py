@@ -115,7 +115,7 @@ for c in country_keep:
     final_darima = pd.concat([final_darima, preds])
     final_darima=final_darima.reset_index(drop=True)
     shapes_arima.update({f"darima_{c}":[darima["s"],darima["shapes"].tolist()]})
-    final_darima.to_csv(f"data/predictions/linear_dynamic_thres{thres}_random.csv")
+    #final_darima.to_csv(f"data/predictions/linear_dynamic_thres{thres}_random.csv")
                
     #########################
     ### Non-linear models ###
@@ -131,7 +131,7 @@ for c in country_keep:
     final_drf = pd.concat([final_drf, preds])
     final_drf=final_drf.reset_index(drop=True)
     shapes_rf.update({f"drf_{c}":[drf["s"],drf["shapes"].tolist()]})
-    final_drf.to_csv(f"data/predictions/nonlinear_dynamic_thres{thres}_random.csv")  
+    #final_drf.to_csv(f"data/predictions/nonlinear_dynamic_thres{thres}_random.csv")  
 
 # Save shapes
 with open(f'data/predictions/arima_shapes_thres{thres}_random.json', 'w') as json_file:
