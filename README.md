@@ -5,7 +5,7 @@ This repository contains the replication material for "The Dynamics of Dissent: 
 - The required python libraries are listed in requirements.txt. 
 
 ## Description of files 
-- /data/acled contains the dataset (acled_grid_India_2023.csv) used for the analysis
+- /data/acled contains the dataset (acled_grid_India_2023.csv) used for the analysis.
 - /data/predictions contains the outputs from the analysis (predictions for the dynamic models: linear_dynamic_thres0.5.csv and nonlinear_dynamic_thres0.5.csv, predictions for the static models: linear_static.csv and nonlinear_static.csv and two merged versions: df_linear.csv and df_nonlinear.csv), extracted protest patterns, including patterns based on artificial protest data (arima_shapes_thres0.5.json, rf_shapes_thres0.5.json, arima_shapes_thres0.5_random.json, rf_shapes_thres0.5_random.json).
 - /out contains the visualizations and tables contained in the paper. 
 - data.py creates the dataset used for the analysis data/acled/acled_grid_India_2023.csv. 
