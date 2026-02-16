@@ -142,7 +142,7 @@ print(mean_squared_error(final_drf.n_protest_events, final_drf.preds_drf,sample_
 
 
 ###################################
-### Clustering ot the centroids ###
+### Clustering of the centroids ###
 ###################################
   
 with open("data/predictions/rf_shapes_thres0.5_random.json", 'r') as json_file:
@@ -213,7 +213,8 @@ for k in [3,5,7]:
         n_clusters = len(representatives)
         cols = 3
         rows = n_clusters // cols + (n_clusters % cols > 0)
-            
+        
+        # Plot centroids
         plt.figure(figsize=(12.5, 4 * rows))
         for i, seq, n in zip(range(n_clusters),representatives, n_obs[1]):
             plt.subplot(rows, cols, i+1)
@@ -232,6 +233,7 @@ for k in [3,5,7]:
         n_member_plots = 16 
         member_cols = 8    
         
+        # Plot centroids and representatives
         fig = plt.figure(figsize=(17, 3 * n_clusters))
         outer = fig.add_gridspec(n_clusters, 1, hspace=0.2)
         
@@ -337,6 +339,7 @@ for k in [3,5,7]:
         cols = 4
         rows = n_clusters // cols + (n_clusters % cols > 0)
             
+        # Plot centroids
         plt.figure(figsize=(17, 4 * rows))
         for i, seq, n in zip(range(n_clusters),representatives, n_obs[1]):
             plt.subplot(rows, cols, i+1)
@@ -355,6 +358,7 @@ for k in [3,5,7]:
         n_member_plots = 16 
         member_cols = 8    
         
+        # Plot centroids and representatives
         fig = plt.figure(figsize=(17, 3 * n_clusters))
         outer = fig.add_gridspec(n_clusters, 1, hspace=0.2)
         
