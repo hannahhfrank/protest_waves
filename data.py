@@ -273,8 +273,19 @@ for i in range(0, len(gid)):
                 s = pd.DataFrame(data=s,index=[0])
                 df = pd.concat([df,s])  
 
-# Remove some events that were assigned to India in ACLED data,
-# but do not fall within India based on prio grid
+# Some events that were assigned to India in ACLED data,
+# do not fall within India based on prio grid 
+# these are not terrestrial grid cells based on the "Static Table"
+miss = df[~df["gid"].isin(gid)]
+miss = miss.sort_values(by=["gid","dd"])
+print(miss.gid.unique())
+
+# Compare some with the Prio grid
+# these are grids close to the coast lines or borders with other countries. 
+# It seems like these were incorrectly assigned to India, and should be removed.
+# https://grid.prio.org/#/
+
+# --> remove
 df = df[df["gid"].isin(gid)] 
 
 # Sort and checks
@@ -326,7 +337,7 @@ df=pd.merge(df,prio_static, how='left', on='gid')
 # Save 
 print(df.isnull().any())
 counts = df.groupby("gid").size()
-print(counts.nunique() == 1)
+print(counts.nunique()==1)
 df.to_csv("data/acled/acled_grid_India_2023.csv",index=False, sep=',')
 
 
