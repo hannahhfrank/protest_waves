@@ -19,7 +19,7 @@ def ARIMA_opti_pred(y: pd.Series,
         y = (y - min_val) / (max_val - min_val)
         y=y.fillna(0) 
     
-    # Train and test data
+    # Test data
     ex_test=y.iloc[int(0.7*len(y)):]  
             
     # Train and test data for x
