@@ -818,7 +818,7 @@ ax2.set_yticks([0,20,40,60,80,100],[0,20,40,60,80,100],size=27)
 patch3 = mpatches.Patch(color='dimgray', label='Correct direction')   
 patch2 = mpatches.Patch(color='darkgray', label='Correct no change')        
 patch1 = mpatches.Patch(color='gainsboro', label='Incorrect')        
-fig.legend(handles=[patch3,patch2,patch1],fontsize=25,ncol=1,loc='right',bbox_to_anchor=(1.285,0.88),frameon=False,labelspacing=0.1)
+fig.legend(handles=[patch3,patch2,patch1],fontsize=25,ncol=1,loc='right',bbox_to_anchor=(1.29,0.88),frameon=False,labelspacing=0.1)
 plt.tight_layout()
 
 plt.savefig("results/directional_accuracy.eps",dpi=400,bbox_inches="tight")
@@ -910,7 +910,7 @@ for n,y,i,j,m in zip([157475,171877,171877,171878],[2022,2022,2023,2023],[0,0,1,
         plt.plot(final_rf["dd"].loc[(final_rf["country"]==n)&(final_rf["dd"]<=f"{y}-12")&(final_rf["dd"]>=f"{y}-01")],final_rf["preds_drf"].loc[(final_rf["country"]==n)&(final_rf["dd"]<=f"{y}-12")&(final_rf["dd"]>=f"{y}-01")],label="DARIMA",linestyle="dashed",color="black",linewidth=1)
         ax.set_ylim(-0.1, 1)
         ax.set_yticks([0,0.2,0.4,0.6,0.8,1],[0,0.2,0.4,0.6,0.8,1],size=10)
-        ax.set_title(f"Grid {n}", fontsize=15)     
+        ax.set_title(f"Grid {n}", fontsize=14)     
     if y==2022:
         plt.xticks(["2022-01","2022-03","2022-05","2022-07","2022-09","2022-11"],["01-22","03-22","05-22","07-22","09-22","11-22"],size=10)   
     if y==2023:
@@ -934,7 +934,7 @@ for n,y,i,j,m in zip([161816,160373,150278,166868],[2023,2023,2022,2022],[0,0,1,
         plt.plot(final_arima["dd"].loc[(final_arima["country"]==n)&(final_arima["dd"]<=f"{y}-12")&(final_arima["dd"]>=f"{y}-01")],final_arima["preds_darima"].loc[(final_arima["country"]==n)&(final_arima["dd"]<=f"{y}-12")&(final_arima["dd"]>=f"{y}-01")],label="DARIMA",linestyle="dashed",color="black",linewidth=1)
         ax.set_ylim(-0.1, 1)
         ax.set_yticks([0,0.2,0.4,0.6,0.8,1],[0,0.2,0.4,0.6,0.8,1],size=10)
-        ax.set_title(f"Grid {n}", fontsize=15)
+        ax.set_title(f"Grid {n}", fontsize=14)
     if m=="r":
         plt.plot(final_rf["dd"].loc[(final_rf["country"]==n)&(final_rf["dd"]<=f"{y}-12")&(final_rf["dd"]>=f"{y}-01")],final_rf["n_protest_events"].loc[(final_rf["country"]==n)&(final_rf["dd"]<=f"{y}-12")&(final_rf["dd"]>=f"{y}-01")],label="Actuals",linestyle="solid",color="black",linewidth=1)
         plt.plot(final_rf["dd"].loc[(final_rf["country"]==n)&(final_rf["dd"]<=f"{y}-12")&(final_rf["dd"]>=f"{y}-01")],final_rf["preds_rf"].loc[(final_rf["country"]==n)&(final_rf["dd"]<=f"{y}-12")&(final_rf["dd"]>=f"{y}-01")],label="ARIMA",linestyle="dotted",color="black",linewidth=1)
@@ -1338,17 +1338,20 @@ fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(12, 7))
 conf=[1.65*arima_wmse_std[0],1.65*arima_wmse_std[1]]
 axes[0,0].scatter([0,1],arima_wmse[:2],color="black",marker='o',s=80)
 axes[0,0].errorbar([0,1],arima_wmse[:2],yerr=conf,color="black",linewidth=2,fmt='none')
+axes[0,0].tick_params(axis="y", labelsize=15)
 
 ax2 = axes[0,0].twinx()
 conf2=[1.65*arima_wmse_std[0],1.65*arima_wmse_std[1]]
 ax2.scatter([2,3],rf_wmse[:2],color="black",marker='o',s=80)
 ax2.errorbar([2,3],rf_wmse[:2],yerr=conf2,color="black",linewidth=2,fmt='none')
 axes[0,0].set_xticks([*range(4)],['ARIMA','DARIMA','RF','DRF'],fontsize=15)
+ax2.tick_params(axis="y", labelsize=15)
 
 # Cluster 1
 conf=[1.65*arima_clu_wmse_std[0][0],1.65*arima_clu_wmse_std[0][1]]
 axes[0,1].scatter([0,1],arima_clu_wmse[0],color="black",marker='o',s=80)
 axes[0,1].errorbar([0,1],arima_clu_wmse[0],yerr=conf,color="black",linewidth=2,fmt='none')
+axes[0,1].tick_params(axis="y", labelsize=15)
 
 ax2 = axes[0,1].twinx()
 conf2=[1.65*rf_clu_wmse_std[0][0],1.65*rf_clu_wmse_std[0][1]]
@@ -1356,11 +1359,13 @@ ax2.scatter([2,3],rf_clu_wmse[0],color="gray",marker='o',s=80)
 ax2.errorbar([2,3],rf_clu_wmse[0],yerr=conf2,color="gray",linewidth=2,fmt='none')
 axes[0,1].set_title("Cluster 1",size=22)
 axes[0,1].set_xticks([*range(4)],['ARIMA','DARIMA','RF','DRF'],fontsize=15)
+ax2.tick_params(axis="y", labelsize=15)
 
 # Cluster 2
 conf=[1.65*arima_clu_wmse_std[1][0],1.65*arima_clu_wmse_std[1][1]]
 axes[0,2].scatter([0,1],arima_clu_wmse[1],color="black",marker='o',s=80)
 axes[0,2].errorbar([0,1],arima_clu_wmse[1],yerr=conf,color="black",linewidth=2,fmt='none')
+axes[0,2].tick_params(axis="y", labelsize=15)
 
 ax2 = axes[0,2].twinx()
 conf2=[1.65*rf_clu_wmse_std[1][0],1.65*rf_clu_wmse_std[1][1]]
@@ -1368,11 +1373,13 @@ ax2.scatter([2,3],rf_clu_wmse[1],color="black",marker='o',s=80)
 ax2.errorbar([2,3],rf_clu_wmse[1],yerr=conf2,color="black",linewidth=2,fmt='none')
 axes[0,2].set_title("Cluster 2",size=22)
 axes[0,2].set_xticks([*range(4)],['ARIMA','DARIMA','RF','DRF'],fontsize=15)
+ax2.tick_params(axis="y", labelsize=15)
 
 # Cluster 3
 conf=[1.65*arima_clu_wmse_std[2][0],1.65*arima_clu_wmse_std[2][1]]
 axes[1,0].scatter([0,1],arima_clu_wmse[2],color="black",marker='o',s=80)
 axes[1,0].errorbar([0,1],arima_clu_wmse[2],yerr=conf,color="black",linewidth=2,fmt='none')
+axes[1,0].tick_params(axis="y", labelsize=15)
 
 ax2 = axes[1,0].twinx()
 conf2=[1.65*rf_clu_wmse_std[2][0],1.65*rf_clu_wmse_std[2][1]]
@@ -1380,11 +1387,13 @@ ax2.scatter([2,3],rf_clu_wmse[2],color="black",marker='o',s=80)
 ax2.errorbar([2,3],rf_clu_wmse[2],yerr=conf2,color="black",linewidth=2,fmt='none')
 axes[1,0].set_title("Cluster 3",size=22)
 axes[1,0].set_xticks([*range(4)],['ARIMA','DARIMA','RF','DRF'],fontsize=15)
+ax2.tick_params(axis="y", labelsize=15)
 
 # Cluster 4
 conf=[1.65*arima_clu_wmse_std[3][0],1.65*arima_clu_wmse_std[3][1]]
 axes[1,1].scatter([0,1],arima_clu_wmse[3],color="gray",marker='o',s=80)
 axes[1,1].errorbar([0,1],arima_clu_wmse[3],yerr=conf,color="gray",linewidth=2,fmt='none')
+axes[1,1].tick_params(axis="y", labelsize=15)
 
 ax2 = axes[1,1].twinx()
 conf2=[1.65*rf_clu_wmse_std[3][0],1.65*rf_clu_wmse_std[3][1]]
@@ -1392,11 +1401,13 @@ ax2.scatter([2,3],rf_clu_wmse[3],color="black",marker='o',s=80)
 ax2.errorbar([2,3],rf_clu_wmse[3],yerr=conf2,color="black",linewidth=2,fmt='none')
 axes[1,1].set_title("Cluster 4",size=22)
 axes[1,1].set_xticks([*range(4)],['ARIMA','DARIMA','RF','DRF'],fontsize=15)
+ax2.tick_params(axis="y", labelsize=15)
 
 # Cluster 5
 conf=[1.65*arima_clu_wmse_std[4][0],1.65*arima_clu_wmse_std[4][1]]
 axes[1,2].scatter([0,1],arima_clu_wmse[4],color="black",marker='o',s=80)
 axes[1,2].errorbar([0,1],arima_clu_wmse[4],yerr=conf,color="black",linewidth=2,fmt='none')
+axes[1,2].tick_params(axis="y", labelsize=15)
 
 ax2 = axes[1,2].twinx()
 conf2=[1.65*rf_clu_wmse_std[4][0],1.65*rf_clu_wmse_std[4][1]]
@@ -1404,6 +1415,7 @@ ax2.scatter([2,3],rf_clu_wmse[4],color="black",marker='o',s=80)
 ax2.errorbar([2,3],rf_clu_wmse[4],yerr=conf2,color="black",linewidth=2,fmt='none')
 axes[1,2].set_title("Cluster 5",size=22)
 axes[1,2].set_xticks([*range(4)],['ARIMA','DARIMA','RF','DRF'],fontsize=15)
+ax2.tick_params(axis="y", labelsize=15)
 
 plt.tight_layout()
 plt.savefig("results/results_per_clu.eps",dpi=400,bbox_inches="tight")
