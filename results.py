@@ -541,6 +541,8 @@ ax2.yaxis.set_ticks_position('right')
 ax1.set_xticks([*range(4)],['ARIMA','DARIMA','ARIMAX','DARIMAX'],fontsize=18)
 ax2.set_xticks([*range(4)],['RF','DRF','DRX','DRFX'],fontsize=18)
 plt.subplots_adjust(wspace=0.1)
+ax1.tick_params(axis="y", labelsize=15)
+ax2.tick_params(axis="y", labelsize=15)
 plt.savefig("results/results_main_plot.eps",dpi=400,bbox_inches="tight")
 
 # (2) MSE #
@@ -844,7 +846,7 @@ inner_grid_1 = GridSpecFromSubplotSpec(6, 7, subplot_spec=outer_grid[0])
 for i,n in zip(range(6),random.choices(list(shapes_arima_strip.keys()), k=6)):
     for j, seq in enumerate(shapes_arima[f"darima_{n}"][1]):
         ax = fig.add_subplot(inner_grid_1[i, j])
-        ax.plot(seq,linewidth=2)
+        ax.plot(seq,linewidth=2,c="black")
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['left'].set_visible(False)
@@ -861,7 +863,7 @@ inner_grid_2 = GridSpecFromSubplotSpec(6, 7, subplot_spec=outer_grid[1])
 for i,n in zip(range(6),random.choices(list(shapes_rf_strip.keys()), k=6)):
     for j, seq in enumerate(shapes_rf[f"drf_{n}"][1]):
         ax = fig.add_subplot(inner_grid_2[i, j])
-        ax.plot(seq,linewidth=2)
+        ax.plot(seq,linewidth=2,c="black")
         if j == 1:
             ax.set_title(f"Grid {n}", fontsize=25)
         ax.spines['top'].set_visible(False)
