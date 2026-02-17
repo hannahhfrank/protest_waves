@@ -15,7 +15,7 @@ acled = pd.read_csv("data/acled/acled_grid_India_2023.csv")
 final_arima=pd.DataFrame()
 final_rf=pd.DataFrame()
 countries = acled["gid"].unique()
-
+norm=True
 for c in countries:                 
     print(c)
     ts=acled["n_protest_events"].loc[acled["gid"]==c]
@@ -24,9 +24,16 @@ for c in countries:
     # Return 0 if training data is flat
     if ts[:int(0.7*len(ts))].max()==0:
         print("flat")
+        
+        if norm==True:
+            min_val = np.min(ts)
+            max_val = np.max(ts)
+            ts_norm = (ts - min_val) / (max_val - min_val)
+            ts_norm=ts_norm.fillna(0) 
+            
         data_lin = {'dd': list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):]),
             'country': [c] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):])),
-            'n_protest_events': [0] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):])),
+            'n_protest_events': list(ts_norm[int(0.7*len(ts)):]),
             'preds_arima': [0] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):])),
             'preds_arimax': [0] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):]))}
         preds = pd.DataFrame(data_lin)
@@ -34,9 +41,23 @@ for c in countries:
         final_arima=final_arima.reset_index(drop=True)
         final_arima.to_csv("data/predictions/linear_static.csv")
         
+        if norm==True:
+            y_train = ts[:int(0.7*len(ts))]
+            mini = np.min(y_train)
+            maxi = np.max(y_train)
+            y_train = (y_train - mini) / (maxi - mini)
+            y_train=y_train.fillna(0) 
+            
+            y_test = ts[int(0.7*len(ts)):]       
+            mini = np.min(y_test)
+            maxi = np.max(y_test)
+            y_test = (y_test - mini) / (maxi - mini)
+            y_test=y_test.fillna(0) 
+            ts_norm=pd.concat([y_train,y_test]) 
+                    
         data_rf = {'dd': list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):]),
             'country': [c] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):])),
-            'n_protest_events': [0] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):])),
+            'n_protest_events': list(ts_norm[int(0.7*len(ts)):]),
             'preds_rf': [0] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):])),
             'preds_rfx': [0] * len(list(acled["dd"].loc[acled["gid"]==c][int(0.7*len(ts)):])),}
         preds = pd.DataFrame(data_rf)
@@ -170,7 +191,6 @@ print(mean_squared_error(final_darima.n_protest_events, final_darima.preds_darim
 print(mean_squared_error(final_darima.n_protest_events, final_darima.preds_darimax,sample_weight=final_darima.n_protest_events))
 print(mean_squared_error(final_drf.n_protest_events, final_drf.preds_drf,sample_weight=final_drf.n_protest_events))
 print(mean_squared_error(final_drf.n_protest_events, final_drf.preds_drfx,sample_weight=final_drf.n_protest_events))
-
 
 ####################           
 ### Merge cases ####

@@ -80,9 +80,9 @@ def DARIMA_opti_pred(y: pd.Series,
                     
             # Test data
             ex_test=y_clu.iloc[int(0.7*len(y_clu)):]
-            ts_seq=[]
                             
             ### Training data ###
+            ts_seq=[]
                     
             # Get input
             for i in range(number_s,len(ex)):
@@ -101,7 +101,6 @@ def DARIMA_opti_pred(y: pd.Series,
             m_dba = model.fit(ts_seq_l)
             cl= m_dba.labels_
             cl=pd.Series(cl)
-            cl=pd.get_dummies(cl)
             cl=pd.get_dummies(cl).astype(int)
                         
             # Make sure that length of dummy set is equal to n_clu
@@ -129,7 +128,6 @@ def DARIMA_opti_pred(y: pd.Series,
             y_test = m_dba.predict(ts_seq_l)
             y_test_seq = m_dba.predict(ts_seq_l)
             y_test=pd.Series(y_test)
-            y_test=pd.get_dummies(y_test)
             y_test=pd.get_dummies(y_test).astype(int)
                 
             # Make sure that length of dummy set is equal to n_clu
@@ -167,7 +165,7 @@ def DARIMA_opti_pred(y: pd.Series,
                     para=[n_clu,number_s]
                     shapes=m_dba.cluster_centers_
                     seq_clusters=y_test_seq
-                    if y_test_seq.max()==0:
+                    if np.unique(y_test_seq).size==1:
                         s=np.nan
                     else:
                         s=silhouette_score(ts_seq_l, y_test_seq, metric="dtw")  
@@ -312,8 +310,6 @@ def general_dynamic_model(y,
                     X: bool = None,
                     norm: bool=False,
                     model=TimeSeriesKMeans(n_clusters=5,metric="dtw",max_iter_barycenter=100,verbose=0,random_state=0),
-                    test_clu:list=[3,5,7],
-                    test_win:list=[3,5,7,9],
                     opti:bool=False):
     
     y_clu=y
@@ -341,17 +337,18 @@ def general_dynamic_model(y,
     # Initiate test metric
     min_test=np.inf
     # For numer of clusters in test_clus
-    for n_clu in test_clu:
+    for n_clu in [3,5,7]:
         # For window length in test_win
-        for number_s in test_win:
+        for number_s in [3,5,7,9]:
             # Update number of clusters in model 
             model.n_clusters=n_clu
         
             # Training data
             ex=y_clu.iloc[:int(0.7*len(y_clu))]
-            ts_seq=[]
             
             ### Training data ###
+            ts_seq=[]
+            
             # Make list of lists, 
             # each sub-list contains number_s observations
             for i in range(number_s,len(ex)):

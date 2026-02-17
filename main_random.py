@@ -144,10 +144,12 @@ print(mean_squared_error(final_drf.n_protest_events, final_drf.preds_drf,sample_
 ###################################
 ### Clustering of the centroids ###
 ###################################
-  
+
+random.seed(1)
+np.random.seed(1)
+ 
 with open("data/predictions/rf_shapes_thres0.5_random.json", 'r') as json_file:
     shapes_rf = json.load(json_file)
-shapes_rf = {key: value for key, value in shapes_rf.items() if not key.startswith("drfx_")}  
   
 score_test=-1
 for k in [3,5,7]:
@@ -272,7 +274,6 @@ for k in [3,5,7]:
         
 with open("data/predictions/arima_shapes_thres0.5_random.json", 'r') as json_file:
     shapes_arima = json.load(json_file)
-shapes_arima = {key: value for key, value in shapes_arima.items() if not key.startswith("darimax_")}  
 
 score_test=-1
 for k in [3,5,7]:
