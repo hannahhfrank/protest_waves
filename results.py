@@ -7,7 +7,6 @@ from matplotlib import cm
 from shapely.geometry import Point
 import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from cycler import cycler
 from sklearn import preprocessing
 import json
 from scipy.stats import ttest_1samp
@@ -29,8 +28,6 @@ mpl.rcParams['font.serif'] = ['Computer Modern Roman']
 mpl.rcParams['text.latex.preamble'] = r'\usepackage{lmodern}\usepackage[T1]{fontenc}'
 random.seed(1)
 np.random.seed(1)
-plot_params = {"text.usetex":True,"font.family":"serif","font.size":15,"xtick.labelsize":15,"ytick.labelsize":15,"axes.labelsize":15,"figure.titlesize":20,"figure.figsize":(8,5),"axes.prop_cycle":cycler(color=['black','rosybrown','gray','indianred','red','maroon','silver',])}
-plt.rcParams.update(plot_params)
 
 #############
 ### India ###

@@ -6,3 +6,7 @@ numpy==1.26.4
 tslearn==0.6.3
 dtaidistance==2.3.13
 scipy==1.15.2
+geopandas==1.0.1
+shapely==2.0.7
+pmdarima==2.0.4
+seaborn==0.13.2
