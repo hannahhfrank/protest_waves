@@ -12,7 +12,8 @@ from sklearn.model_selection import PredefinedSplit,GridSearchCV
 def ARIMA_opti_pred(y: pd.Series, 
                X: str=None, 
                norm: bool=False):
-           
+    
+    # Normalize      
     if norm==True:
         min_val = np.min(y)
         max_val = np.max(y)
@@ -54,9 +55,10 @@ def DARIMA_opti_pred(y: pd.Series,
                 model=TimeSeriesKMeans(n_clusters=5,metric="dtw",max_iter_barycenter=100,verbose=0,random_state=0),
                 norm: bool=False):
     
-    # Copy ts for clusterin
+    # Copy ts for clustering
     y_clu=y.copy()
     
+    # Normalize
     if norm==True:
         min_val = np.min(y)
         max_val = np.max(y)
@@ -67,18 +69,12 @@ def DARIMA_opti_pred(y: pd.Series,
     ### Clustering  ###
     ###################
 
-    min_test=np.inf
-    
-    # For numer of clusters in test_clus
+    min_test=np.inf  
     for n_clu in [3,5,7]:
-        # For window length in test_win
         for number_s in [3,5,7,9]:
-            model.n_clusters=n_clu
                                  
-            # Training data
+            # Training and test data
             ex=y_clu.iloc[:int(0.7*len(y_clu))]
-                    
-            # Test data
             ex_test=y_clu.iloc[int(0.7*len(y_clu)):]
                             
             ### Training data ###
@@ -112,7 +108,7 @@ def DARIMA_opti_pred(y: pd.Series,
             ### Test data ###
             ts_seq=[]
             
-            # Get inout
+            # Get input
             for i in range(len(ex),len(y_clu)):
                 ts_seq.append(y_clu.iloc[i-number_s:i])    
             ts_seq=np.array(ts_seq)
@@ -140,10 +136,9 @@ def DARIMA_opti_pred(y: pd.Series,
             ### Predictions ###
             ###################
                     
-            # Training data
+            # Training and test data
             ex=y.iloc[:int(0.7*len(y))]
             ex_test=y.iloc[int(0.7*len(y)):]
-                
 
             if X is None: 
                 
@@ -156,9 +151,10 @@ def DARIMA_opti_pred(y: pd.Series,
                     pred.append(darima_test.arima_res_.get_forecast(1, exog=exog).predicted_mean.iloc[0])
                     cl_c=np.concatenate([cl_c,exog]) 
 
+                # Error
                 ar_met=mean_squared_error(ex_test,pred,sample_weight=ex_test)
                                                         
-                # If ar_met is smaller than min_mae
+                # If test error is smaller 
                 if ar_met < min_test:
                     min_test=ar_met
                     preds_final=pred
@@ -171,10 +167,10 @@ def DARIMA_opti_pred(y: pd.Series,
                         s=silhouette_score(ts_seq_l, y_test_seq, metric="dtw")  
             
             elif X is not None:
+                
+                # Merge clusters and additional X-covariates
                 x_train=X.iloc[:int(0.7*len(y)),:]
                 x_test=X.iloc[int(0.7*len(y)):,:]
-                                            
-                # Merge clusters and additional X-covariate
                 exo_in=np.concatenate([x_train[number_s:],np.array(cl)],axis=1)
                 exo_test=np.concatenate([x_test,np.array(y_test)],axis=1)
                                                                                                                                 
@@ -186,10 +182,11 @@ def DARIMA_opti_pred(y: pd.Series,
                     exog = exo_test[i:i+1,:]
                     pred.append(model_test.arima_res_.get_forecast(1, exog=exog).predicted_mean.iloc[0])
                     history=np.concatenate([history,exog])
-                                                                           
+                 
+                # Error
                 ar_met=mean_squared_error(ex_test,pred,sample_weight=ex_test)
                                 
-                # If ar_met is smaller than min_mae
+                # If test error is smaller 
                 if ar_met < min_test:
                     min_test=ar_met
                     preds_final=pred
@@ -233,10 +230,10 @@ def general_model(y,
      
          y=pd.concat([y_train,y_test]) 
                 
-         
     min_test=np.inf
     for ar in [2,3,4,6]:
         
+        # Generate inputs
         def lags(series):
             last = series.iloc[-ar:].fillna(0)
             return last.tolist() + [0] * (ar - len(last))
@@ -252,14 +249,16 @@ def general_model(y,
         cols_name=cols_name[::-1]
         data=pd.DataFrame(data_matrix,columns=cols_name)
             
-        # Get training and test data
+        # Get input and output data
         output=data.iloc[:, -1]
         in_put=data.iloc[:, :-1]
-            
+        
+        # Potentially add X variables    
         if X is not None:
             X=X.iloc[-len(in_put):].reset_index(drop=True)
             in_put=pd.concat([X, in_put],axis=1)
                 
+        # Split train and test data
         y_train = output[:-(len(y)-int(0.7*len(y)))]
         x_train = in_put[:-(len(y)-int(0.7*len(y)))]
         
@@ -268,7 +267,7 @@ def general_model(y,
         
         if opti==True: 
         
-            # Validation
+            # Optimization
             val_train_index = list(y_train[:int(0.5*len(y_train))].index)
             val_test_index = list(y_train[int(0.5*len(y_train)):].index)
         
@@ -281,20 +280,25 @@ def general_model(y,
             grid_search.fit(x_train, y_train)
             best_params = grid_search.best_params_
             model_fit = RandomForestRegressor(**best_params,random_state=0)
+            
+            # Fit model and get predictions
             model_fit.fit(x_train, y_train)
             pred = model_fit.predict(x_test)
         
         else: 
+            # Fit model and get predictions
             model_fit = RandomForestRegressor(random_state=0)
             model_fit.fit(x_train, y_train)
             pred = model_fit.predict(x_test)
             
+        # Get error
         if y_test.max()==0:
                error=((y_test.reset_index(drop=True)-pd.Series(pred))**2).mean()
         
         else: 
             error=mean_squared_error(y_test,pred,sample_weight=y_test)
 
+        # If test error is smaller 
         if error<min_test:
             min_test=error
             para=[ar]
@@ -312,6 +316,7 @@ def general_dynamic_model(y,
                     model=TimeSeriesKMeans(n_clusters=5,metric="dtw",max_iter_barycenter=100,verbose=0,random_state=0),
                     opti:bool=False):
     
+    # Copy ts for clustering
     y_clu=y
     
     # Normalize 
@@ -334,14 +339,9 @@ def general_dynamic_model(y,
     ### Clustering ###
     ##################
 
-    # Initiate test metric
     min_test=np.inf
-    # For numer of clusters in test_clus
     for n_clu in [3,5,7]:
-        # For window length in test_win
         for number_s in [3,5,7,9]:
-            # Update number of clusters in model 
-            model.n_clusters=n_clu
         
             # Training data
             ex=y_clu.iloc[:int(0.7*len(y_clu))]
@@ -349,26 +349,19 @@ def general_dynamic_model(y,
             ### Training data ###
             ts_seq=[]
             
-            # Make list of lists, 
-            # each sub-list contains number_s observations
+            # Get input
             for i in range(number_s,len(ex)):
-                ts_seq.append(y_clu.iloc[i-number_s:i])
-                
-            # Convert into array,
-            # each row is a time series of number_s observations     
+                ts_seq.append(y_clu.iloc[i-number_s:i])    
             ts_seq=np.array(ts_seq)
             
             # Scaling
             ts_seq_l= pd.DataFrame(ts_seq).T
             ts_seq_l=(ts_seq_l-ts_seq_l.min())/(ts_seq_l.max()-ts_seq_l.min())
-            ts_seq_l=ts_seq_l.fillna(0) # if seq uniform 
+            ts_seq_l=ts_seq_l.fillna(0) 
             ts_seq_l=np.array(ts_seq_l.T)
                         
-            # Reshape array,
-            # each sub array contains times series of number_s observations
+            # Clustering 
             ts_seq_l=ts_seq_l.reshape(len(ts_seq_l),number_s,1)
-            
-            # Clustering and convert into dummy set
             model.n_clusters=n_clu
             m_dba = model.fit(ts_seq_l)
             cl= m_dba.labels_
@@ -384,27 +377,19 @@ def general_dynamic_model(y,
             ### Test data ###
             ts_seq=[]
         
-            # Make list of lists, 
-            # each sub-list contains number_s observations
+            # Get input
             for i in range(len(ex),len(y_clu)):
-                ts_seq.append(y_clu.iloc[i-number_s:i])
-                
-            # Convert into array,
-            # each row is a time series of number_s observations       
+                ts_seq.append(y_clu.iloc[i-number_s:i])     
             ts_seq=np.array(ts_seq)
             
             # Sacling
             ts_seq_l= pd.DataFrame(ts_seq).T
             ts_seq_l=(ts_seq_l-ts_seq_l.min())/(ts_seq_l.max()-ts_seq_l.min())
-            ts_seq_l=ts_seq_l.fillna(0) # if seq uniform 
+            ts_seq_l=ts_seq_l.fillna(0) 
             ts_seq_l=np.array(ts_seq_l.T)
                     
-            # Reshape array,
-            # each sub array contains times series of number_s observations
-            ts_seq_l=ts_seq_l.reshape(len(ts_seq_l),number_s,1)
-            
             # Use trained model to predict clusters in test data
-            # and convert into dummy set
+            ts_seq_l=ts_seq_l.reshape(len(ts_seq_l),number_s,1)
             y_test = m_dba.predict(ts_seq_l)
             y_test_seq = m_dba.predict(ts_seq_l)
             y_test=pd.Series(y_test)
@@ -416,6 +401,7 @@ def general_dynamic_model(y,
             y_test=pd.concat([y_t,y_test],axis=0)   
             y_test=y_test.fillna(0)  
             
+            # Reset index
             clusters=pd.concat([cl,y_test],axis=0,ignore_index=True)
             index=list(range(len(y)-len(clusters), len(y)))
             clusters.set_index(pd.Index(index),inplace=True)
@@ -425,6 +411,8 @@ def general_dynamic_model(y,
             ###################
             
             for ar in [2,3,4,6]:
+                
+                # Generate inputs
                 def lags(series):
                     last = series.iloc[-ar:].fillna(0)
                     return last.tolist() + [0] * (ar - len(last))
@@ -440,9 +428,8 @@ def general_dynamic_model(y,
                 cols_name=cols_name[::-1]
                 data=pd.DataFrame(data_matrix,columns=cols_name)
                 
-                # Get training and test data
+                # Get input data
                 in_put=pd.DataFrame(data.iloc[:, :-1])
-                
                 index=list(range(len(y)-len(in_put), len(y)))
                 in_put.set_index(pd.Index(index),inplace=True)
                     
@@ -450,9 +437,9 @@ def general_dynamic_model(y,
                     in_put=pd.concat([clusters,in_put],axis=1)
                 else: 
                     in_put=pd.concat([in_put,clusters],axis=1)
-                    
                 in_put=in_put.fillna(0)
                     
+                # Potentially add X variables    
                 if X is not None:
                     X=X.reset_index(drop=True)
                     in_put=pd.concat([X,in_put],axis=1)
@@ -460,9 +447,11 @@ def general_dynamic_model(y,
                 
                 in_put.columns = in_put.columns.map(str)
                 
+                # Get output data
                 output=y.reset_index(drop=True)
                 output=output[-len(in_put):]
-    
+                
+                # Split train and test data
                 y_train = output[:-(len(y)-int(0.7*len(y)))]
                 x_train = in_put[:-(len(y)-int(0.7*len(y)))]
     
@@ -471,7 +460,7 @@ def general_dynamic_model(y,
                 
                 if opti==True: 
                 
-                    # Validation
+                    # Optimization
                     val_train_index = list(y_train[:int(0.5*len(y_train))].index)
                     val_test_index = list(y_train[int(0.5*len(y_train)):].index)
                 
@@ -484,17 +473,21 @@ def general_dynamic_model(y,
                     grid_search.fit(x_train, y_train)
                     best_params = grid_search.best_params_
                     model_fit = RandomForestRegressor(**best_params,random_state=0)
+                    
+                    # Fit model and get predictions
                     model_fit.fit(x_train, y_train)
                     pred = model_fit.predict(x_test)
                 
                 else: 
+                    # Fit model and get predictions
                     model_fit = RandomForestRegressor(random_state=0)
                     model_fit.fit(x_train, y_train)
                     pred = model_fit.predict(x_test)
                         
+                # Get error
                 error=mean_squared_error(y_test,pred,sample_weight=y_test)
                                     
-                # If ar_met smaller than min_test
+                # If test error is smaller 
                 if error<min_test:
                     min_test=error
                     para=[ar,n_clu,number_s]

@@ -16,6 +16,7 @@ final_arima=pd.DataFrame()
 final_rf=pd.DataFrame()
 countries = acled["gid"].unique()
 norm=True
+
 for c in countries:                 
     print(c)
     ts=acled["n_protest_events"].loc[acled["gid"]==c]
