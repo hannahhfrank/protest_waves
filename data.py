@@ -62,7 +62,6 @@ for i in range(len(df_protest)):
                               (prio_shp["xcoord"]>df_protest.longitude.iloc[i]-1) &
                               (prio_shp["xcoord"]<df_protest.longitude.iloc[i]+1)]
     prio_shp_s.reset_index(inplace=True, drop=True)
-    prio_shp_s[['gid',"xcoord","ycoord",'geometry']]
 
     for x in range(len(prio_shp_s)):
         if prio_shp_s.geometry.iloc[x].contains(Point(df_protest.longitude.iloc[i], df_protest.latitude.iloc[i])) == True:
