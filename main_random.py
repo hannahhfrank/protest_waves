@@ -51,55 +51,6 @@ for c in country_keep:
     lambda_g = ts.mean()
     vals = rng.poisson(lam=lambda_g, size=len(ts))
     ts_random=pd.Series(vals, index=ts.index, name=ts.name)
-    
-    #if c==145234:
-    #    fig, axes = plt.subplots(nrows=4, ncols=2, figsize=(9, 10))
-    #    axes[0,0].plot(ts[:24].index, ts[:24].values,c="black",linewidth=2)
-    #    axes[0,0].set_title("Original time series",size=20)
-    #    axes[0,0].xaxis.set_visible(False)      
-    #    axes[0,0].set_ylim(bottom=-0.05)
-    #    axes[0,0].tick_params(axis='both', which='major', labelsize=15)
-    #    axes[0,1].plot(ts_random[:24].index, ts_random[:24].values,color="gray",linewidth=2)
-    #    axes[0,1].set_title("Poisson time series",size=20)
-    #    axes[0,1].xaxis.set_visible(False)        
-    #    axes[0,1].set_ylim(bottom=-0.05)
-    #    axes[0,1].tick_params(axis='both', which='major', labelsize=15)
-        
-       
-    #if c==165428:
-    #    axes[1,0].plot(ts[24:48].index, ts[24:48].values,c="black",linewidth=2)
-    #    axes[1,0].xaxis.set_visible(False)      
-    #    axes[1,0].set_ylim(bottom=-0.05)
-    #    axes[1,0].tick_params(axis='both', which='major', labelsize=15)
-    #    axes[1,1].plot(ts_random[24:48].index, ts_random[24:48].values,color="gray",linewidth=2)
-    #    axes[1,1].xaxis.set_visible(False)        
-    #    axes[1,1].set_ylim(bottom=-0.05)
-    #    axes[1,1].tick_params(axis='both', which='major', labelsize=15)
-
-    #if c==165428:
-    #    axes[2,0].plot(ts[:24].index, ts[:24].values,c="black",linewidth=2)
-    #    axes[2,0].xaxis.set_visible(False)      
-    #    axes[2,0].set_ylim(bottom=-0.05)
-    #    axes[2,0].tick_params(axis='both', which='major', labelsize=15)
-    #    axes[2,1].plot(ts_random[:24].index, ts_random[:24].values,color="gray",linewidth=2)
-    #    axes[2,1].xaxis.set_visible(False)        
-    #    axes[2,1].set_ylim(bottom=-0.05)
-    #    axes[2,1].tick_params(axis='both', which='major', labelsize=15)  
-        
-    #if c==174030:
-    #    axes[3,0].plot(ts[:24].index, ts[:24].values,c="black",linewidth=2)
-    #    axes[3,0].xaxis.set_visible(False)      
-    #    axes[3,0].set_ylim(bottom=-0.05)
-    #    axes[3,0].tick_params(axis='both', which='major', labelsize=15)
-    #    axes[3,1].plot(ts_random[:24].index, ts_random[:24].values,color="gray",linewidth=2)
-    #    axes[3,1].xaxis.set_visible(False)        
-    #    axes[3,1].set_ylim(bottom=-0.05)
-    #    axes[3,1].tick_params(axis='both', which='major', labelsize=15)  
-        
-    #    plt.tight_layout()
-    #    fig.subplots_adjust(hspace=0.05)
-    #    plt.savefig("results/ts_random_example.eps",dpi=400,bbox_inches="tight")
-    #    plt.show()
 
     #####################
     ### Linear models ###
@@ -139,7 +90,6 @@ with open(f'data/predictions/rf_shapes_thres{thres}_random.json', 'w') as json_f
 
 print(mean_squared_error(final_darima.n_protest_events, final_darima.preds_darima,sample_weight=final_darima.n_protest_events))
 print(mean_squared_error(final_drf.n_protest_events, final_drf.preds_drf,sample_weight=final_drf.n_protest_events))
-
 
 ###################################
 ### Clustering of the centroids ###
@@ -253,7 +203,7 @@ for k in [3,5,7]:
             # Representatives
             member_idx = np.where(clusters == i + 1)[0]
             members = [rows_without_nan[j] for j in member_idx]
-            samples = random.sample(members, min(n_member_plots, len(members)))
+            samples = random.sample(members, n_member_plots)
         
             n_rows = int(np.ceil(len(samples) / member_cols))
             member_grid = inner[0, 1].subgridspec(n_rows, member_cols, hspace=0.35, wspace=0.3)
@@ -377,7 +327,7 @@ for k in [3,5,7]:
             # Representatives
             member_idx = np.where(clusters == i + 1)[0]
             members = [rows_without_nan[j] for j in member_idx]
-            samples = random.sample(members, min(n_member_plots, len(members)))
+            samples = random.sample(members, n_member_plots)
         
             n_rows = int(np.ceil(len(samples) / member_cols))
             member_grid = inner[0, 1].subgridspec(n_rows, member_cols, hspace=0.35, wspace=0.3)

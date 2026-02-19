@@ -80,9 +80,8 @@ acled_farmers = acled_farmers.reset_index()
 acled_farmers.rename(columns={0:"n_protest_events"}, inplace=True)    
   
 # Add missing observation to time series, those have zero events
-prio_help = gpd.read_file("data/acled/prio_time_2014.csv")
-prio_help_s=prio_help[["gid"]].loc[(prio_help["gwno"]=="750")].reset_index(drop=True)
-prio_help_s["gid"]=prio_help_s["gid"].astype(int)
+prio_help = pd.read_csv("data/acled/prio_time_2014.csv")
+prio_help_s=prio_help.loc[prio_help["gwno"]==750].reset_index(drop=True)
 gid = list(prio_help_s.gid.unique())
 date = ['2016-01','2016-02','2016-03','2016-04','2016-05','2016-06','2016-07','2016-08','2016-09','2016-10','2016-11','2016-12',
         '2017-01','2017-02','2017-03','2017-04','2017-05','2017-06','2017-07','2017-08','2017-09','2017-10','2017-11','2017-12',
@@ -121,7 +120,7 @@ def preprocess_min_max_group(df, x, group):
         norm = scaler.transform(df_s[x].values.reshape(-1, 1))
         out = pd.concat([out, pd.DataFrame(norm)], ignore_index=True)
     df[f"{x}_norm"] = out  
-preprocess_min_max_group(acled_farmers,"n_protest_events","gid")
+preprocess_min_max_group(acled_farmers,"n_protest_events","gid") 
 
 # Plot high intensity gids
 fig, ax = plt.subplots(figsize = (12,8))
@@ -184,9 +183,8 @@ acled_farmers = acled_farmers.reset_index()
 acled_farmers.rename(columns={0:"n_protest_events"}, inplace=True)    
 
 # Add missing observation to time series, those have zero events 
-prio_help = gpd.read_file("data/acled/prio_time_2014.csv")
-prio_help_s=prio_help[["gid"]].loc[(prio_help["gwno"]=="770")].reset_index(drop=True)
-prio_help_s["gid"]=prio_help_s["gid"].astype(int)
+prio_help = pd.read_csv("data/acled/prio_time_2014.csv")
+prio_help_s=prio_help.loc[prio_help["gwno"]==770].reset_index(drop=True)
 gid = list(prio_help_s.gid.unique())
 date = ['2010-01','2010-02','2010-03','2010-04','2010-05','2010-06','2010-07','2010-08','2010-09','2010-10','2010-11','2010-12',
         '2011-01','2011-02','2011-03','2011-04','2011-05','2011-06','2011-07','2011-08','2011-09','2011-10','2011-11','2011-12',
@@ -227,8 +225,7 @@ def preprocess_min_max_group(df, x, group):
     out = pd.DataFrame()
     for i in df[group].unique():
         df_s = df.loc[df[group] == i]
-        scaler = preprocessing.MinMaxScaler().fit(
-            df_s[x].values.reshape(-1, 1))
+        scaler = preprocessing.MinMaxScaler().fit(df_s[x].values.reshape(-1, 1))
         norm = scaler.transform(df_s[x].values.reshape(-1, 1))
         out = pd.concat([out, pd.DataFrame(norm)], ignore_index=True)
     df[f"{x}_norm"] = out    
@@ -295,8 +292,8 @@ acled_farmers = acled_farmers.reset_index()
 acled_farmers.rename(columns={0:"n_protest_events"}, inplace=True)      
 
 # Add missing observation to time series, those have zero events 
-prio_help = gpd.read_file("data/acled/prio_time_2014.csv")
-prio_help_s=prio_help[["gid"]].loc[(prio_help["gwno"]=="2")].reset_index(drop=True)
+prio_help = pd.read_csv("data/acled/prio_time_2014.csv")
+prio_help_s=prio_help.loc[prio_help["gwno"]==2].reset_index(drop=True)
 prio_help_s["gid"]=prio_help_s["gid"].astype(int)
 gid = list(prio_help_s.gid.unique())
 date = ['2020-01','2020-02','2020-03','2020-04','2020-05','2020-06','2020-07','2020-08','2020-09','2020-10','2020-11','2020-12',
@@ -328,8 +325,7 @@ def preprocess_min_max_group(df, x, group):
     out = pd.DataFrame()
     for i in df[group].unique():
         df_s = df.loc[df[group] == i]
-        scaler = preprocessing.MinMaxScaler().fit(
-            df_s[x].values.reshape(-1, 1))
+        scaler = preprocessing.MinMaxScaler().fit(df_s[x].values.reshape(-1, 1))
         norm = scaler.transform(df_s[x].values.reshape(-1, 1))
         out = pd.concat([out, pd.DataFrame(norm)], ignore_index=True)
     df[f"{x}_norm"] = out  
@@ -354,8 +350,7 @@ def preprocess_min_max_group(df, x, group):
     out = pd.DataFrame()
     for i in df[group].unique():
         df_s = df.loc[df[group] == i]
-        scaler = preprocessing.MinMaxScaler().fit(
-            df_s[x].values.reshape(-1, 1))
+        scaler = preprocessing.MinMaxScaler().fit(df_s[x].values.reshape(-1, 1))
         norm = scaler.transform(df_s[x].values.reshape(-1, 1))
         out = pd.concat([out, pd.DataFrame(norm)], ignore_index=True)
     df[f"{x}_norm"] = out
@@ -442,8 +437,8 @@ arima_wmse=[mean_squared_error(final_arima.n_protest_events, final_arima.preds_a
 
 arima_wmse_std=[wmse_se(final_arima.n_protest_events, final_arima.preds_arima,final_arima.n_protest_events),
                 wmse_se(final_arima.n_protest_events, final_arima.preds_darima,final_arima.n_protest_events),
-            wmse_se(final_arima.n_protest_events, final_arima.preds_arimax,final_arima.n_protest_events),
-            wmse_se(final_arima.n_protest_events, final_arima.preds_darimax,final_arima.n_protest_events)]
+                wmse_se(final_arima.n_protest_events, final_arima.preds_arimax,final_arima.n_protest_events),
+                wmse_se(final_arima.n_protest_events, final_arima.preds_darimax,final_arima.n_protest_events)]
 
 arima_wmse_std_r = [round(x, 5) for x in arima_wmse_std]
 print(arima_wmse_std_r)
@@ -467,14 +462,14 @@ print(round(mean_squared_error(final_rf.n_protest_events, final_rf.preds_rfx,sam
 print(round(mean_squared_error(final_rf.n_protest_events, final_rf.preds_drfx,sample_weight=final_rf.n_protest_events),5))
 
 rf_wmse=[mean_squared_error(final_rf.n_protest_events, final_rf.preds_rf,sample_weight=final_rf.n_protest_events),
-            mean_squared_error(final_rf.n_protest_events, final_rf.preds_drf,sample_weight=final_rf.n_protest_events),
-            mean_squared_error(final_rf.n_protest_events, final_rf.preds_rfx,sample_weight=final_rf.n_protest_events),
-            mean_squared_error(final_rf.n_protest_events, final_rf.preds_drfx,sample_weight=final_rf.n_protest_events)]
+         mean_squared_error(final_rf.n_protest_events, final_rf.preds_drf,sample_weight=final_rf.n_protest_events),
+         mean_squared_error(final_rf.n_protest_events, final_rf.preds_rfx,sample_weight=final_rf.n_protest_events),
+         mean_squared_error(final_rf.n_protest_events, final_rf.preds_drfx,sample_weight=final_rf.n_protest_events)]
 
 rf_wmse_std=[wmse_se(final_rf.n_protest_events, final_rf.preds_rf,final_rf.n_protest_events),
              wmse_se(final_rf.n_protest_events, final_rf.preds_drf,final_rf.n_protest_events),
-            wmse_se(final_rf.n_protest_events, final_rf.preds_rfx,final_rf.n_protest_events),
-            wmse_se(final_rf.n_protest_events, final_rf.preds_drfx,final_rf.n_protest_events)]
+             wmse_se(final_rf.n_protest_events, final_rf.preds_rfx,final_rf.n_protest_events),
+             wmse_se(final_rf.n_protest_events, final_rf.preds_drfx,final_rf.n_protest_events)]
 
 rf_wmse_std_f = [round(x, 5) for x in rf_wmse_std]
 print(rf_wmse_std_f)
@@ -730,7 +725,7 @@ final_arima["pred_darima_change"] = final_arima["preds_darima"] - final_arima["p
 
 # ARIMA # 
 final_arima["correct_no_change_arima"] = ((final_arima.actual_change == 0) & (final_arima.pred_arima_change == 0)).astype(int)
-final_arima["correct_direction_arima"] = ((np.sign(final_arima.actual_change) == np.sign(final_arima.pred_arima_change)) &(final_arima.actual_change != 0)).astype(int)
+final_arima["correct_direction_arima"] = ((np.sign(final_arima.actual_change) == np.sign(final_arima.pred_arima_change)) & (final_arima.actual_change != 0)).astype(int)
 final_arima["incorrect_arima"]=0
 final_arima.loc[((final_arima["correct_no_change_arima"]!=1) & (final_arima["correct_direction_arima"]!=1)), "incorrect_arima"] = 1
 
@@ -746,11 +741,13 @@ da_arima=[(final_arima['correct_direction_arima'].sum()/len(final_arima))*100,
           (final_arima['correct_no_change_arima'].sum()/len(final_arima))*100,
           (final_arima['incorrect_arima'].sum()/len(final_arima))*100]
 print(da_arima)
+print(sum(da_arima))
 
 da_darima=[(final_arima['correct_direction_darima'].sum()/len(final_arima))*100,
            (final_arima['correct_no_change_darima'].sum()/len(final_arima))*100,
            (final_arima['incorrect_darima'].sum()/len(final_arima))*100]
 print(da_darima)
+print(sum(da_darima))
 
 
 final_rf =  pd.read_csv("data/predictions/df_nonlinear.csv",index_col=0)
@@ -769,7 +766,7 @@ final_rf["correct_direction_rf"] = ((np.sign(final_rf.actual_change) == np.sign(
 final_rf["incorrect_rf"]=0
 final_rf.loc[((final_rf["correct_no_change_rf"]!=1) & (final_rf["correct_direction_rf"]!=1)), "incorrect_rf"] = 1
 
-# DARIMA # 
+# DRF # 
 final_rf["correct_no_change_drf"] = ((final_rf.actual_change == 0) & (final_rf.pred_drf_change == 0)).astype(int)
 final_rf["correct_direction_drf"] = ((np.sign(final_rf.actual_change) == np.sign(final_rf.pred_drf_change)) &(final_rf.actual_change != 0)).astype(int)
 final_rf["incorrect_drf"]=0
@@ -781,11 +778,14 @@ da_rf=[(final_rf['correct_direction_rf'].sum()/len(final_rf))*100,
           (final_rf['correct_no_change_rf'].sum()/len(final_rf))*100,
           (final_rf['incorrect_rf'].sum()/len(final_rf))*100]
 print(da_rf)
+print(sum(da_rf))
+
 
 da_drf=[(final_rf['correct_direction_drf'].sum()/len(final_rf))*100,
           (final_rf['correct_no_change_drf'].sum()/len(final_rf))*100,
           (final_rf['incorrect_drf'].sum()/len(final_rf))*100]
 print(da_drf)
+print(sum(da_drf))
 
 # Main plot
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 7))
@@ -835,7 +835,6 @@ with open("data/predictions/rf_shapes_thres0.5.json", 'r') as json_file:
     shapes_rf = json.load(json_file)
 shapes_rf = {key: value for key, value in shapes_rf.items() if not key.startswith("drfx_")}  
   
-# Random selection
 shapes_arima_strip = {key.replace("darima_", ''): value for key, value in shapes_arima.items()}
 shapes_rf_strip = {key.replace("drf_", ''): value for key, value in shapes_rf.items()}
 
@@ -843,6 +842,8 @@ shapes_rf_strip = {key.replace("drf_", ''): value for key, value in shapes_rf.it
 fig = plt.figure(figsize=(22, 12))
 outer_grid = GridSpec(1, 2, figure=fig, wspace=0.05)
 inner_grid_1 = GridSpecFromSubplotSpec(6, 7, subplot_spec=outer_grid[0])  
+
+# Random selection
 for i,n in zip(range(6),random.choices(list(shapes_arima_strip.keys()), k=6)):
     for j, seq in enumerate(shapes_arima[f"darima_{n}"][1]):
         ax = fig.add_subplot(inner_grid_1[i, j])
@@ -860,12 +861,12 @@ for i,n in zip(range(6),random.choices(list(shapes_arima_strip.keys()), k=6)):
             ax.set_title(f"Grid {n}", fontsize=25)
 
 inner_grid_2 = GridSpecFromSubplotSpec(6, 7, subplot_spec=outer_grid[1])  
+
+# Random selection
 for i,n in zip(range(6),random.choices(list(shapes_rf_strip.keys()), k=6)):
     for j, seq in enumerate(shapes_rf[f"drf_{n}"][1]):
         ax = fig.add_subplot(inner_grid_2[i, j])
         ax.plot(seq,linewidth=2,c="black")
-        if j == 1:
-            ax.set_title(f"Grid {n}", fontsize=25)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['left'].set_visible(False)
@@ -874,8 +875,10 @@ for i,n in zip(range(6),random.choices(list(shapes_rf_strip.keys()), k=6)):
         ax.set_yticks([])
         ax.set_ylim(-0.1, 1.1)
         ax.axhline(y=-0.1,linewidth=0.5)
-        plt.subplots_adjust(wspace=0.01,hspace=0.5)
-
+        if j == 1:
+            ax.set_title(f"Grid {n}", fontsize=25)        
+        
+plt.subplots_adjust(wspace=0.01,hspace=0.5)
 left_box = patches.Rectangle((0.119, 0.1), 0.389, 0.825, linewidth=0.5, edgecolor='black', facecolor='none')
 fig.add_artist(left_box)
 fig.text(0.31,0.07, "ARIMA", fontsize=30, color='black', ha='center')
@@ -894,6 +897,7 @@ final_rf =  pd.read_csv("data/predictions/df_nonlinear.csv",index_col=0)
 
 # Good examples
 fig = plt.figure(figsize=(12, 12))
+outer_grid = GridSpec(1, 2, figure=fig, wspace=0.05)
 inner_grid_1 = GridSpecFromSubplotSpec(4, 2, subplot_spec=outer_grid[0], wspace=0.1, hspace=0.35)  # 2x2 grid for first subplot
 for n,y,i,j,m in zip([157475,171877,171877,171878],[2022,2022,2023,2023],[0,0,1,1,2,2,3,3],[0,1,0,1,0,1,0,1],["a","r","r","r"]):
     ax = fig.add_subplot(inner_grid_1[i, j])
@@ -1129,7 +1133,7 @@ for k in [3,5,7]:
             # Representatives
             member_idx = np.where(clusters == i + 1)[0]
             members = [rows_without_nan[j] for j in member_idx]
-            samples = random.sample(members, min(n_member_plots, len(members)))
+            samples = random.sample(members, n_member_plots)
         
             n_rows = int(np.ceil(len(samples) / member_cols))
             member_grid = inner[0, 1].subgridspec(n_rows, member_cols, hspace=0.35, wspace=0.3)
@@ -1162,6 +1166,19 @@ df_final_cen_rf=pd.merge(final_rf, df_cen_final_rf[["country","clusters","cluste
 # For each cluster, obtain wmse, standard error, and t-test
 rf_clu_wmse=[]
 rf_clu_wmse_std=[]
+
+# Function to calculate standard errors for WMSE
+def wmse_se(y_true, y_pred, weights):
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+    w = np.asarray(weights)
+
+    z = (y_true - y_pred) ** 2
+    w_sum = np.sum(w)
+    z_bar_w = np.sum(w * z) / w_sum
+
+    var_wmse = np.sum((w ** 2) * (z - z_bar_w) ** 2) / (w_sum ** 2)
+    return np.sqrt(var_wmse)
 
 for x in [1,2,3,4,5]:
     print(f"Cluster {x}")
@@ -1284,7 +1301,7 @@ for k in [3,5,7]:
             # Representatives
             member_idx = np.where(clusters == i + 1)[0]
             members = [rows_without_nan[j] for j in member_idx]
-            samples = random.sample(members, min(n_member_plots, len(members)))
+            samples = random.sample(members, n_member_plots)
         
             n_rows = int(np.ceil(len(samples) / member_cols))
             member_grid = inner[0, 1].subgridspec(n_rows, member_cols, hspace=0.35, wspace=0.3)
@@ -1318,6 +1335,19 @@ df_final_cen_arima=pd.merge(final_arima, df_cen_final_arima[["country","clusters
 # For each cluster, obtain wmse, standard error, and t-test
 arima_clu_wmse=[]
 arima_clu_wmse_std=[]
+
+# Function to calculate standard errors for WMSE
+def wmse_se(y_true, y_pred, weights):
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+    w = np.asarray(weights)
+
+    z = (y_true - y_pred) ** 2
+    w_sum = np.sum(w)
+    z_bar_w = np.sum(w * z) / w_sum
+
+    var_wmse = np.sum((w ** 2) * (z - z_bar_w) ** 2) / (w_sum ** 2)
+    return np.sqrt(var_wmse)
 
 for x in [1,2,3,4,5]:
     print(f"Cluster {x}")
