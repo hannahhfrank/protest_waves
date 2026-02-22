@@ -1,7 +1,6 @@
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
-import numpy as np
 
 # Load ACLED data from local folder 
 acled = pd.read_csv("data/acled/acled_all_events.csv",low_memory=False,index_col=[0]) 
@@ -244,9 +243,8 @@ df=df.fillna(0)
 # Add observations for gid-months which are completely missing
 
 # Get all gid ids for india
-prio_help = gpd.read_file("data/acled/prio_time_2014.csv")
-prio_help_s=prio_help[["gid"]].loc[(prio_help["gwno"]=="750")].reset_index(drop=True)
-prio_help_s["gid"]=prio_help_s["gid"].astype(int)
+prio_help = pd.read_csv("data/acled/prio_time_2014.csv")
+prio_help_s=prio_help.loc[prio_help["gwno"]==750].reset_index(drop=True)
 gid = list(prio_help_s.gid.unique())
 
 # Make range of time stamps to add missing observations 
@@ -324,19 +322,16 @@ df.dtypes
 # growstart: starting month of the growing season for the cell’s main crop
 # growend: final month of the growing season for the cell’s main crop
 
-prio_static = gpd.read_file('data/acled/prio_static.csv')
+prio_static = pd.read_csv('data/acled/prio_static.csv')
 prio_static = prio_static.drop(columns=['row','col',"xcoord","ycoord",'cmr_mean','cmr_max','cmr_min','cmr_sd','growend','growstart','diamsec_s','diamprim_s','gem_s','goldplacer_s','goldvein_s','goldsurface_s','harvarea','imr_mean','mountains_mean','petroleum_s','imr_max','imr_min','imr_sd','maincrop','rainseas','ttime_min',"ttime_max",'ttime_sd'])
-prio_static.replace([''], np.nan, inplace=True)
 
 # Merge 
-prio_static['gid']=prio_static['gid'].astype(int)
-df['gid']=df['gid'].astype(int)
 df=pd.merge(df,prio_static, how='left', on='gid')
 
 # Save 
 print(df.isnull().any())
 counts = df.groupby("gid").size()
 print(counts.nunique()==1)
+print(df.duplicated(subset=["dd","gid"]).any())
 df.to_csv("data/acled/acled_grid_India_2023.csv",index=False, sep=',')
-
-
+df.dtypes

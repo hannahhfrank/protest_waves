@@ -962,6 +962,9 @@ plt.savefig("results/results_main_preds_bad_select_short.eps",dpi=400,bbox_inche
 ### Validate threshold ###
 ##########################
 
+# Load acled data
+acled = pd.read_csv("data/acled/acled_grid_India_2023.csv")
+
 final_arima_static = pd.read_csv("data/predictions/linear_static.csv",index_col=0)
 
 # Find countries with high intensity for different thresholds
@@ -992,7 +995,6 @@ for thres in [0.5,0.55,0.6,0.65,0.7]:
     print(round((mean_squared_error(final_arima.n_protest_events,final_arima.preds_arima,sample_weight=final_arima.n_protest_events)-mean_squared_error(final_arima.n_protest_events, final_arima.preds_darima,sample_weight=final_arima.n_protest_events)),5))
     print(round(ttest_1samp((final_arima["mse_arima"]-final_arima["mse_darima"]), 0)[1],5))
     
-# Validate threshold
 final_rf_static = pd.read_csv("data/predictions/nonlinear_static.csv",index_col=0)
 
 # Find countries with high intensity for different thresholds
