@@ -23,7 +23,7 @@ conda activate protest_waves
 pip install -r requirements.txt
 ```
 
-Then run the main files after each other. This will take approximately 24 hours.
+Then run the main files after each other. This will take approximately 36 hours.
 
 ```
 python main.py
