@@ -417,6 +417,7 @@ def wmse_se(y_true, y_pred, weights):
     z = (y_true - y_pred) ** 2
     w_sum = np.sum(w)
     z_bar_w = np.sum(w * z) / w_sum
+    #z_bar_w = mean_squared_error(y_true,y_pred,sample_weight=w)
 
     var_wmse = np.sum((w ** 2) * (z - z_bar_w) ** 2) / (w_sum ** 2)
     return np.sqrt(var_wmse)
@@ -855,7 +856,7 @@ for i,n in zip(range(6),random.choices(list(shapes_arima_strip.keys()), k=6)):
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_ylim(-0.1, 1.1)
-        ax.axhline(y=-0.1,linewidth=0.5)
+        ax.axhline(y=-0.1,linewidth=0.5,c="black")
         plt.subplots_adjust(wspace=0.01,hspace=0.5)
         if j == 1:
             ax.set_title(f"Grid {n}", fontsize=25)
@@ -874,7 +875,7 @@ for i,n in zip(range(6),random.choices(list(shapes_rf_strip.keys()), k=6)):
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_ylim(-0.1, 1.1)
-        ax.axhline(y=-0.1,linewidth=0.5)
+        ax.axhline(y=-0.1,linewidth=0.5,c="black")
         if j == 1:
             ax.set_title(f"Grid {n}", fontsize=25)        
         
